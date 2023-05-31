@@ -1,9 +1,9 @@
 
 <template>
-  <v-container fluid fill-height style="background-image: url('/exotic.jpg'); background-size: cover;">
-    <v-row justify="center" class="text-center">
-      <v-col  cols="12" sm="6" md="4" lg="3" xl="2" >
-        <v-card elevation="8" shaped tile>
+  <v-container fluid fill-height style="background-image: url(/exotic.jpg); background-size: cover;">
+    <v-row justify="center">
+      <v-col  cols="12" >
+        <v-card elevation="24" shaped tile min-width="500" max-width="80vw" width="50vw" class="ma-auto">
           <v-card-title>
             {{ title }}
           </v-card-title>
@@ -11,21 +11,60 @@
             {{ subtitle  }}
           </v-card-subtitle>
           <v-card-text>
-            <v-text-field
-              v-model ="username"
-              label="Username"
-              prepend-icon="mdi-account"
-              hint="introduceti username-ul">
-            </v-text-field>
-            <v-text-field
-              v-model="password"
-              label="Password"
-              prepend-icon="mdi-lock-outline"
-              :append-icon="passViz ? 'mdi-eye' : 'mdi-eye-off'"
-              hint="introduceti parola"
-              :type="passViz ? 'text' : 'password'"
-              @click:append="passViz = !passViz">
-            </v-text-field>
+            <v-form v-model="formularValid">
+              <v-text-field
+                v-model ="username"
+                :rules="[fieldNotEmpty, usernameIsEmail]"
+                label="Username"
+                prepend-icon="mdi-account"
+                hint="introduceti username-ul">
+              </v-text-field>
+              <v-text-field
+                :rules="[fieldNotEmpty, passwordHasNumber, passwordHasUpper, passwordHasLower, passwordHasSpecial, passwordLength]"
+                v-model="password"
+                label="Password"
+                prepend-icon="mdi-lock-outline"
+                :append-icon="passViz ? 'mdi-eye' : 'mdi-eye-off'"
+                hint="introduceti parola"
+                :type="passViz ? 'text' : 'password'"
+                @click:append="passViz = !passViz">
+              </v-text-field>
+              <v-text-field
+                v-model="confirm"
+                v-if="title === 'Sign Up'"
+                :rules="[fieldNotEmpty, passwordMatch]"
+                label="Confirm Password"
+                prepend-icon="mdi-lock-outline"
+                :append-icon="passViz ? 'mdi-eye' : 'mdi-eye-off'"
+                hint="confirmati parola"
+                :type="passViz ? 'text' : 'password'"
+                @click:append="passViz = !passViz">
+              </v-text-field>
+            </v-form>
+            <v-list dense v-if="title === 'Sign Up'">
+              <v-subheader>Password must contain the following:
+              </v-subheader>
+              <v-list-item
+                v-for="(passwordMessage, i) in passwordMessages"
+                :key="i">
+                <v-list-item-icon>
+                  <v-icon :color="passwordMessage.checked ? 'success' : 'error'">
+                    {{ passwordMessage.checked ? 'mdi-check-circle-outline' : 'mdi-close-circle-outline' }}
+                  </v-icon>
+
+                </v-list-item-icon>
+
+                <v-list-item-content>
+
+                  <v-list-item-title>
+                    {{ passwordMessage.text }}
+                  </v-list-item-title>
+
+                </v-list-item-content>
+
+              </v-list-item>
+            </v-list>
+
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -48,17 +87,85 @@ export default {
 
   data: () => ({
     loading: true,
-    title: 'Log In',
-    subtitle: 'Please enter your credentials',
-    alt: 'Sign Up',
+    title: 'Sign Up',
+    subtitle: 'Please provide your information',
+    alt: 'Log In',
     passViz: false,
     username: '',
-    password: ''
+    password: '',
+    confirm: '',
+    errorMessages: [
+      'Password must be at least 16 characters long',
+      'Password must contain at least one number',
+      'Password must contain at least one uppercase letter',
+      'Password must contain at least one lowercase letter',
+      'Password must contain at least one special character',
+      'Passwords do not match',
+      'Field can\'t be empty',
+      'Username must be an email'
+    ],
+    formularValid: false
   }),
 
   computed: {
+    usernameIsEmail () {
+      // returns if the username is an email based on regex
+      return /\S+@\S+\.\S+/.test(this.username) || this.errorMessages[7]
+    },
+    passwordMessages () {
+      return [
+        {
+          text: this.errorMessages[0],
+          checked: typeof this.passwordLength === 'boolean'
+        },
+        {
+          text: this.errorMessages[1],
+          checked: typeof this.passwordHasNumber === 'boolean'
+        },
+        {
+          text: this.errorMessages[2],
+          checked: typeof this.passwordHasUpper === 'boolean'
+        },
+        {
+          text: this.errorMessages[3],
+          checked: typeof this.passwordHasLower === 'boolean'
+        },
+        {
+          text: this.errorMessages[4],
+          checked: typeof this.passwordHasSpecial === 'boolean'
+        },
+        {
+          text: this.errorMessages[5],
+          checked: typeof this.passwordMatch === 'boolean'
+        }
+      ]
+    },
     primaryButtonEnabled () {
-      return this.username.length > 0 && this.password.length > 0
+      return this.formularValid
+    },
+    // i verify if the password and confirm are the same
+    passwordMatch () {
+      return this.password === this.confirm || this.errorMessages[5]
+    },
+    fieldNotEmpty () {
+      return (value) => {
+        return value.length > 0 || this.errorMessages[6]
+      }
+    },
+    passwordLength () {
+      return this.password.length > 15 || this.errorMessages[0]
+    },
+    passwordHasNumber () {
+      return /\d/.test(this.password) || this.errorMessages[1]
+    },
+    passwordHasUpper () {
+      return /[A-Z]/.test(this.password) || this.errorMessages[2]
+    },
+    passwordHasLower () {
+      return /[a-z]/.test(this.password) || this.errorMessages[3]
+    },
+    passwordHasSpecial () {
+      return /[^A-Za-z0-9]/.test(this.password) || this.errorMessages[4]
     }
   },
 
