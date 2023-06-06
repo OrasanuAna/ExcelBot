@@ -11,32 +11,35 @@
             {{ subtitle  }}
           </v-card-subtitle>
           <v-card-text>
-            <v-form v-model="formularValid">
+            <v-form v-model="formularValid" id="logInForm">
               <v-text-field
+                id="usernameInput"
                 v-model ="username"
                 :rules="[fieldNotEmpty, usernameIsEmail]"
                 label="Username"
                 prepend-icon="mdi-account"
-                hint="introduceti username-ul">
+                hint="Introduceti username-ul">
               </v-text-field>
               <v-text-field
+                id="passwordInput"
                 :rules="[fieldNotEmpty, passwordHasNumber, passwordHasUpper, passwordHasLower, passwordHasSpecial, passwordLength]"
                 v-model="password"
                 label="Password"
                 prepend-icon="mdi-lock-outline"
                 :append-icon="passViz ? 'mdi-eye' : 'mdi-eye-off'"
-                hint="introduceti parola"
+                hint="Introduceti parola"
                 :type="passViz ? 'text' : 'password'"
                 @click:append="passViz = !passViz">
               </v-text-field>
               <v-text-field
+                id="confirmInput"
                 v-model="confirm"
                 v-if="title === 'Sign Up'"
                 :rules="[fieldNotEmpty, passwordMatch]"
                 label="Confirm Password"
                 prepend-icon="mdi-lock-outline"
                 :append-icon="passViz ? 'mdi-eye' : 'mdi-eye-off'"
-                hint="confirmati parola"
+                hint="Confirmati parola"
                 :type="passViz ? 'text' : 'password'"
                 @click:append="passViz = !passViz">
               </v-text-field>

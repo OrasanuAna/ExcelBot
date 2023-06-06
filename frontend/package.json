@@ -30,6 +30,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-vue": "^8.0.3",
+    "puppeteer": "^20.5.0",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",
     "stylus": "^0.55.0",
