@@ -1,9 +1,10 @@
 const puppeteer = require('puppeteer');
 
+let browser;
+let page;
+
 async function invalidEmailTesting() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#usernameInput');
     const secondDiv = await page.$('#logInForm div.v-input.v-text-field:first-of-type');
 
@@ -14,17 +15,15 @@ async function invalidEmailTesting() {
     const isError = await secondDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await secondDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await secondDiv.screenshot({path: 'invalidEmailTesting.png'});
-    await browser.close();
+    await secondDiv.screenshot({ path: 'invalidEmailTesting.png' });
+    await closeBrowser()
 
     const testPassed = isError && text === 'Username must be an email';
-    console.log( (testPassed ? "✅" : "❌") + " invalidEmailTesting" );
+    outputMessage( testPassed, " invalidEmailTesting" )
 }
 
 async function validEmailTesting() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#usernameInput');
     const primulDiv = await page.$('#logInForm div.v-input.v-text-field:first-of-type');
 
@@ -35,18 +34,15 @@ async function validEmailTesting() {
     const isError = await primulDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await primulDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await primulDiv.screenshot({path: 'validEmailTesting.png'});
-    await browser.close();
+    await primulDiv.screenshot({ path: 'validEmailTesting.png' });
+    await closeBrowser()
 
     const testPassed = !isError && text === 'Introduceti username-ul';
-    console.log((testPassed ? "✅" : "❌") + " validEmailTesting");
-
+    outputMessage( testPassed, " validEmailTesting" )
 }
 
 async function emptyEmailTesting() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#usernameInput');
     const primulDiv = await page.$('#logInForm div.v-input.v-text-field:first-of-type');
 
@@ -59,18 +55,15 @@ async function emptyEmailTesting() {
     const isError = await primulDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await primulDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await primulDiv.screenshot({path: 'emptyEmailTesting.png'});
-    await browser.close();
+    await primulDiv.screenshot({ path: 'emptyEmailTesting.png' });
+    await closeBrowser()
 
     const testPassed = isError && text === 'Field can\'t be empty';
-    console.log((testPassed ? "✅" : "❌") + " emptyEmailTesting");
-
+    outputMessage( testPassed, " emptyEmailTesting" )
 }
 
 async function passwordNotEmpty() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#usernameInput');
     const secondDiv = await page.$('#logInForm div.v-input.v-text-field:nth-of-type(2)');
 
@@ -83,18 +76,15 @@ async function passwordNotEmpty() {
     const isError = await secondDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await secondDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await secondDiv.screenshot({path: 'emptyPasswordTesting.png'});
-    await browser.close();
+    await secondDiv.screenshot({ path: 'emptyPasswordTesting.png' });
+    await closeBrowser()
 
     const testPassed = isError && text === 'Field can\'t be empty';
-    console.log((testPassed ? "✅" : "❌") + " emptyPasswordTesting");
-
+    outputMessage( testPassed, " emptyPasswordTesting" )
 }
 
 async function passwordHasNumber() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#usernameInput');
     const secondDiv = await page.$('#logInForm div.v-input.v-text-field:nth-of-type(2)');
 
@@ -108,17 +98,15 @@ async function passwordHasNumber() {
     const isError = await secondDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await secondDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await secondDiv.screenshot({path: 'passwordHasNumber.png'});
-    await browser.close();
+    await secondDiv.screenshot({ path: 'passwordHasNumber.png' });
+    await closeBrowser()
     const testPassed = isError && text === 'Password must contain at least one number';
-    console.log((testPassed ? "✅" : "❌") + " passwordHasNumber");
+    outputMessage( testPassed, " passwordHasNumber" )
 
 }
 
 async function passwordHasUpper() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#usernameInput');
     const secondDiv = await page.$('#logInForm div.v-input.v-text-field:nth-of-type(2)');
 
@@ -132,17 +120,15 @@ async function passwordHasUpper() {
     const isError = await secondDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await secondDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await secondDiv.screenshot({path: 'passwordHasUpper.png'});
-    await browser.close();
+    await secondDiv.screenshot({ path: 'passwordHasUpper.png' });
+    await closeBrowser()
     const testPassed = isError && text === 'Password must contain at least one uppercase letter';
-    console.log((testPassed ? "✅" : "❌") + " passwordHasUpper");
+    outputMessage( testPassed, " passwordHasUpper" )
 
 }
 
 async function passwordHasLower() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#usernameInput');
     const secondDiv = await page.$('#logInForm div.v-input.v-text-field:nth-of-type(2)');
 
@@ -156,17 +142,15 @@ async function passwordHasLower() {
     const isError = await secondDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await secondDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await secondDiv.screenshot({path: 'passwordHasLower.png'});
-    await browser.close();
+    await secondDiv.screenshot({ path: 'passwordHasLower.png' });
+    await closeBrowser()
     const testPassed = isError && text === 'Password must contain at least one lowercase letter';
-    console.log((testPassed ? "✅" : "❌") + " passwordHasLower");
+    outputMessage( testPassed, " passwordHasLower" )
 
 }
 
 async function passwordHasSpecial() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#usernameInput');
     const secondDiv = await page.$('#logInForm div.v-input.v-text-field:nth-of-type(2)');
 
@@ -180,17 +164,15 @@ async function passwordHasSpecial() {
     const isError = await secondDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await secondDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await secondDiv.screenshot({path: 'passwordHasSpecial.png'});
-    await browser.close();
+    await secondDiv.screenshot({ path: 'passwordHasSpecial.png' });
+    await closeBrowser()
     const testPassed = isError && text === 'Password must contain at least one special character';
-    console.log((testPassed ? "✅" : "❌") + " passwordHasSpecial");
+    outputMessage( testPassed, " passwordHasSpecial" )
 
 }
 
 async function passwordLength() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#usernameInput');
     const secondDiv = await page.$('#logInForm div.v-input.v-text-field:nth-of-type(2)');
 
@@ -204,17 +186,15 @@ async function passwordLength() {
     const isError = await secondDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await secondDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await secondDiv.screenshot({path: 'passwordLength.png'});
-    await browser.close();
+    await secondDiv.screenshot({ path: 'passwordLength.png' });
+    await closeBrowser()
     const testPassed = isError && text === 'Password must be at least 16 characters long';
-    console.log((testPassed ? "✅" : "❌") + " passwordLength");
+    outputMessage( testPassed, " passwordLength" )
 
 }
 
 async function passwordLength() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#usernameInput');
     const secondDiv = await page.$('#logInForm div.v-input.v-text-field:nth-of-type(2)');
 
@@ -228,17 +208,15 @@ async function passwordLength() {
     const isError = await secondDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await secondDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await secondDiv.screenshot({path: 'passwordLength.png'});
-    await browser.close();
+    await secondDiv.screenshot({ path: 'passwordLength.png' });
+    await closeBrowser()
     const testPassed = isError && text === 'Password must be at least 16 characters long';
-    console.log((testPassed ? "✅" : "❌") + " passwordLength");
+    outputMessage( testPassed, " passwordLength" )
 
 }
 
 async function confirmPasswordNotEmpty() {
-    const browser = await puppeteer.launch({headless: 'new'});
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8080/#/');
+    await startBrowser()
     await page.waitForSelector('#confirmInput');
     const secondDiv = await page.$('#logInForm div.v-input.v-text-field:nth-of-type(3)');
 
@@ -251,22 +229,66 @@ async function confirmPasswordNotEmpty() {
     const isError = await secondDiv.evaluate((el) => el.classList.contains('error--text'));
     const textElement = await secondDiv.$('.v-messages__message');
     const text = await page.evaluate(element => element.textContent, textElement);
-    await secondDiv.screenshot({path: 'confirmPasswordNotEmpty.png'});
-    await browser.close();
+    await secondDiv.screenshot({ path: 'confirmPasswordNotEmpty.png' });
+    await closeBrowser()
 
     const testPassed = isError && text === 'Field can\'t be empty';
-    console.log((testPassed ? "✅" : "❌") + " emptyConfirmPasswordTesting");
-
+    outputMessage( testPassed, " emptyConfirmPasswordTesting" )
 }
 
+// make the startBrowser function and call it
 
-invalidEmailTesting();
-validEmailTesting();
-emptyEmailTesting();
-passwordNotEmpty();
-passwordHasNumber();
-passwordHasUpper();
-passwordHasLower();
-passwordHasSpecial();
-passwordLength();
-confirmPasswordNotEmpty();
+
+async function startBrowser() {
+    browser = await puppeteer.launch({ headless: "new" });
+    page = await browser.newPage();
+    await page.goto('http://localhost:8080/#/');
+}
+
+async function closeBrowser() {
+    await browser.close()
+}
+
+function outputMessage( testPassed, message ) {
+    console.log( (testPassed ? "✅" : "❌") + message )
+}
+
+async function passwordAndConfirmPassword() {
+    await startBrowser()
+    await page.waitForSelector('#usernameInput');
+    const secondDiv = await page.$('#logInForm div.v-input.v-text-field:nth-of-type(2)');
+    const thirdDiv = await page.$('#logInForm div.v-input.v-text-field:nth-of-type(3)');
+    const inputElement = await secondDiv.$('#passwordInput');
+    const inputElement2 = await thirdDiv.$('#confirmInput');
+    await inputElement.click();
+    await inputElement.type('Abc1*aBaaaaaaaaa');
+    await inputElement2.click();
+    await inputElement2.type('Abc1*aBaaaaaaaaa');
+    await page.keyboard.press('Tab');
+    const isError = await thirdDiv.evaluate((el) => el.classList.contains('error--text'));
+    const textElement = await thirdDiv.$('.v-messages__message');
+    const text = await page.evaluate(element => element.textContent, textElement);
+    await thirdDiv.screenshot({ path: 'passwordAndConfirmPassword.png' });
+    await closeBrowser()
+    const testPassed = !isError && text === 'Confirmati parola';
+    outputMessage( testPassed, " passwordAndConfirmPassword" )
+}
+
+// todo: testati show password functionality
+
+async function main() {
+
+    await invalidEmailTesting();
+    await validEmailTesting();
+    await emptyEmailTesting();
+    await passwordNotEmpty();
+    await passwordHasNumber();
+    await passwordHasUpper();
+    await passwordHasLower();
+    await passwordHasSpecial();
+    await passwordLength();
+    await confirmPasswordNotEmpty();
+    await passwordAndConfirmPassword();
+}
+
+main();

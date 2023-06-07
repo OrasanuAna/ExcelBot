@@ -1,14 +1,14 @@
 <template>
-  <LogIn />
+  <Landing />
 </template>
 
 <script>
-import LogIn from '../components/LogIn'
+import Landing from '../components/Landing'
 
 export default {
   name: 'HomeView',
   components: {
-    LogIn
+    Landing
   }
 }
 </script>
