@@ -1,6 +1,6 @@
 
 <template>
-  <v-container fluid fill-height style="background-image: url(/exotic.jpg); background-size: cover;">
+  <v-container fluid fill-height>
     <v-row justify="center">
       <v-col  cols="12" >
         <v-card elevation="24" shaped tile min-width="500" max-width="80vw" width="50vw" class="ma-auto">
@@ -70,6 +70,9 @@
 
           </v-card-text>
           <v-card-actions>
+            <v-btn icon :to="{ name: 'home' }" >
+              <v-icon>mdi-arrow-left</v-icon>
+            </v-btn>
             <v-spacer></v-spacer>
             <v-btn @click="change" color="accent" text >
               {{ alt }}

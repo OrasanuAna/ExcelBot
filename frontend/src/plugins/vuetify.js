@@ -17,7 +17,8 @@ export default new Vuetify({
 
         'price-1': '#607D8B',
         'price-2': '#8BC34A',
-        'price-3': '#3F51B5'
+        'price-3': '#3F51B5',
+        'sparkline-bg': '#2E8B57'
       }
     }
   }

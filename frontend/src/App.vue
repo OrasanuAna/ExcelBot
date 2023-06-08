@@ -4,7 +4,7 @@
 
     </v-app-bar>
 
-    <v-main>
+    <v-main style="background-image: url(/bg-excel.jpg); background-size: cover;">
       <router-view/>
     </v-main>
   </v-app>

@@ -15,6 +15,8 @@ import { logger } from './logger.js'
 import { logError } from './hooks/log-error.js'
 import { mongodb } from './mongodb.js'
 
+import { authentication } from './authentication.js'
+
 import { services } from './services/index.js'
 
 const app = express(feathers())
@@ -31,6 +33,8 @@ app.use('/', serveStatic(app.get('public')))
 app.configure(rest())
 
 app.configure(mongodb)
+
+app.configure(authentication)
 
 app.configure(services)
 // app.configure(channels)

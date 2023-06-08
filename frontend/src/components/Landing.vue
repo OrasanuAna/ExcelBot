@@ -2,41 +2,55 @@
   <v-container>
     <v-row justify="center">
       <v-col  cols="12" >
-        <v-carousel height="30vh">
-          <v-carousel-item
-          v-for="(item,i) in carouselItems"
-          :key="i"
-          :src="item.src"
-          reverse-transition="fade-transition"
-          transition="fade-transition"
-          >
-          <v-sheet color="rgba(0, 0, 0, 0.6)" elevation="24">
-            <v-row class="fill-height" align="center" justify="center">
-              <div class="text-h5 blue-grey--text text--lighten-5 text-center pa-6">
-                {{ item.text }}
-              </div>
-            </v-row>
-          </v-sheet>
-        </v-carousel-item>
-      </v-carousel>
+        <v-sheet outlined class="pa-4">
+          <v-carousel height="30vh">
+            <v-carousel-item
+            v-for="(item,i) in carouselItems"
+            :key="i"
+            :src="item.src"
+            reverse-transition="fade-transition"
+            transition="fade-transition"
+            >
+            <v-sheet color="rgba(0, 0, 0, 0.6)" elevation="24">
+              <v-row class="fill-height" align="center" justify="center">
+                <div class="text-h5 blue-grey--text text--lighten-5 text-center pa-6">
+                  {{ item.text }}
+                </div>
+              </v-row>
+            </v-sheet>
+          </v-carousel-item>
+          </v-carousel>
+        </v-sheet>
     </v-col>
   </v-row>
 
   <v-row>
     <v-col cols="12">
-      <v-sparkline
-      :value="[0, 2, 5, 7, 5, 8, 9, 5, 6, 7, 6, 8, 6, 9, 10]"
-      :gradient="['#f72047', '#ffd200', '#1feaea']"
-      :smooth="true"
-      :padding="8"
-      :line-width="2"
-      stroke-linecap="round"
-      gradient-direction="left"
-      :fill="false"
-      type="trend"
-      :auto-line-width="false"
-      auto-draw
-      ></v-sparkline>
+      <v-card outlined max-height="30vh">
+        <v-card-text>
+          <v-row align="stretch">
+            <v-col class="d-flex align-center" cols="12" sm="6">
+              <v-sparkline
+              :value="[0, 2, 5, 7, 5, 8, 9, 5, 6, 7, 6, 8, 6, 9, 10]"
+              color="sparkline-bg"
+              :smooth="true"
+              :padding="8"
+              :line-width="2"
+              stroke-linecap="round"
+              gradient-direction="left"
+              :fill="false"
+              type="trend"
+              :auto-line-width="false"
+              auto-draw
+              ></v-sparkline>
+            </v-col>
+            <v-divider vertical class="d-none d-sm-block"></v-divider>
+            <v-col class="d-flex align-center text-sm-subtitle-1 text-xl-h5" cols="12" sm="6">
+              "Aplicație revoluționară pentru creșterea productivității. Funcționalități avansate și ghidaj inteligent optimizează fluxul de lucru, rezolvă sarcini mai rapid și maximizează rezultatele. Transformă rutina într-o experiență productivă cu aplicația noastră inteligentă!"
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
     </v-col>
   </v-row>
 
@@ -67,7 +81,7 @@
                     </v-list>
                   </v-card-text>
                   <v-card-actions class="justify-center">
-                    <v-btn color="primary" outlined rounded>
+                    <v-btn color="primary" rounded :to="{ name:'login' }" >
                       Alege
                     </v-btn>
                   </v-card-actions>
