@@ -11,6 +11,9 @@
             {{ subtitle  }}
           </v-card-subtitle>
           <v-card-text>
+            <v-alert outlined text type="error" v-if="signupError">
+              {{ signupError }}
+            </v-alert>
             <v-form v-model="formularValid" id="logInForm">
               <v-text-field
                 id="usernameInput"
@@ -77,7 +80,7 @@
             <v-btn @click="change" color="accent" text >
               {{ alt }}
             </v-btn>
-            <v-btn @click="does" color="primary" :disabled="!primaryButtonEnabled">
+            <v-btn @click="handleAuthentication" color="primary" :disabled="!primaryButtonEnabled" :loading="loading">
               {{ title }}
             </v-btn>
           </v-card-actions>
@@ -88,11 +91,13 @@
 </template>
 
 <script>
+
 export default {
   name: 'LogIn',
 
   data: () => ({
-    loading: true,
+    loading: false,
+    signupError: false,
     title: 'Sign Up',
     subtitle: 'Please provide your information',
     alt: 'Log In',
@@ -187,8 +192,24 @@ export default {
         this.alt = 'Log In'
       }
     },
-    does () {
-
+    handleAuthentication () {
+      if (this.title === 'Sign Up') {
+        this.signupError = false
+        this.loading = true
+        this.$store.dispatch('signup', {
+          username: this.username,
+          password: this.password
+        }).then(() => {
+          this.loading = false
+          this.$router.push({ name: 'home' })
+        }).catch((err) => {
+          this.loading = false
+          this.signupError = true
+          console.log(err)
+        })
+      } else {
+        console.log('Log In')
+      }
     }
   }
 }

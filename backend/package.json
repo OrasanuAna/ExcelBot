@@ -4,68 +4,55 @@
   "version": "0.0.0",
   "homepage": "",
   "private": true,
+  "main": "src",
   "keywords": [
     "feathers"
   ],
-  "author": {},
+  "author": {
+    "name": "AnaOrasanu",
+    "email": "orasanu.anamaria19@gmail.com"
+  },
   "contributors": [],
   "bugs": {},
-  "engines": {
-    "node": ">= 18.16.0"
-  },
-  "feathers": {
-    "language": "js",
-    "packager": "npm",
-    "database": "mongodb",
-    "framework": "express",
-    "transports": [
-      "rest"
-    ],
-    "schema": "json"
-  },
   "directories": {
     "lib": "src",
-    "test": "test"
+    "test": "test/",
+    "config": "config/"
   },
-  "files": [
-    "lib/client.js",
-    "lib/**/*.d.ts",
-    "lib/**/*.shared.js"
-  ],
-  "main": "src/client",
-  "type": "module",
+  "engines": {
+    "node": "^18.0.0",
+    "npm": ">= 3.0.0"
+  },
   "scripts": {
-    "start": "node src",
+    "test": "npm run lint && npm run mocha",
+    "lint": "eslint src/. test/. --config .eslintrc.json --fix",
     "dev": "nodemon src/",
-    "prettier": "npx prettier \"**/*.js\" --write",
-    "mocha": "cross-env NODE_ENV=test mocha test/ --recursive --exit",
-    "test": "npm run mocha",
-    "bundle:client": "npm pack --pack-destination ./public"
+    "start": "node src/",
+    "mocha": "mocha test/ --recursive --exit"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ],
+    "ignore": []
   },
   "dependencies": {
-    "@feathersjs/adapter-commons": "^5.0.5",
-    "@feathersjs/authentication": "^5.0.5",
-    "@feathersjs/authentication-client": "^5.0.5",
-    "@feathersjs/authentication-local": "^5.0.5",
-    "@feathersjs/authentication-oauth": "^5.0.5",
-    "@feathersjs/configuration": "^5.0.5",
-    "@feathersjs/errors": "^5.0.5",
-    "@feathersjs/express": "^5.0.5",
-    "@feathersjs/feathers": "^5.0.5",
-    "@feathersjs/mongodb": "^5.0.5",
-    "@feathersjs/schema": "^5.0.5",
+    "@feathersjs/authentication": "^4.5.16",
+    "@feathersjs/authentication-local": "^4.5.16",
+    "@feathersjs/authentication-oauth": "^4.5.16",
+    "@feathersjs/configuration": "^4.5.16",
+    "@feathersjs/errors": "^4.5.16",
+    "@feathersjs/express": "^4.5.16",
+    "@feathersjs/feathers": "^4.5.16",
     "@feathersjs/transport-commons": "^5.0.5",
+    "@humanwhocodes/config-array": "^0.11.10",
     "compression": "^1.7.4",
-    "mongodb": "^5.5.0",
+    "cors": "^2.8.5",
+    "feathers-mongoose": "^8.5.1",
+    "helmet": "^4.6.0",
+    "mongodb-core": "^3.2.7",
+    "mongoose": "^6.11.2",
+    "serve-favicon": "^2.5.0",
     "winston": "^3.9.0"
-  },
-  "devDependencies": {
-    "@feathersjs/cli": "^5.0.5",
-    "@feathersjs/rest-client": "^5.0.5",
-    "axios": "^1.4.0",
-    "cross-env": "^7.0.3",
-    "mocha": "^10.2.0",
-    "nodemon": "^2.0.22",
-    "prettier": "^2.8.8"
   }
 }

@@ -1,11 +1,13 @@
-import { app } from './app.js'
-import { logger } from './logger.js'
+/* eslint-disable no-console */
+const logger = require('./logger');
+const app = require('./app');
+const port = app.get('port');
+const server = app.listen(port);
 
-const port = app.get('port')
-const host = app.get('host')
+process.on('unhandledRejection', (reason, p) =>
+  logger.error('Unhandled Rejection at: Promise ', p, reason)
+);
 
-process.on('unhandledRejection', (reason) => logger.error('Unhandled Rejection %O', reason))
-
-app.listen(port).then(() => {
-  logger.info(`Feathers app listening on http://${host}:${port}`)
-})
+server.on('listening', () =>
+  logger.info('Feathers application started on http://%s:%d', app.get('host'), port)
+);

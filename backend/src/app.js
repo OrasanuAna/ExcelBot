@@ -1,61 +1,60 @@
-// For more information about this file see https://dove.feathersjs.com/guides/cli/application.html
-import { feathers } from '@feathersjs/feathers'
-import express, {
-  rest,
-  json,
-  urlencoded,
-  cors,
-  serveStatic,
-  notFound,
-  errorHandler
-} from '@feathersjs/express'
-import configuration from '@feathersjs/configuration'
-import { configurationValidator } from './configuration.js'
-import { logger } from './logger.js'
-import { logError } from './hooks/log-error.js'
-import { mongodb } from './mongodb.js'
+const path = require('path');
+const favicon = require('serve-favicon');
+const compress = require('compression');
+const helmet = require('helmet');
+const cors = require('cors');
+const logger = require('./logger');
 
-import { authentication } from './authentication.js'
+const feathers = require('@feathersjs/feathers');
+const configuration = require('@feathersjs/configuration');
+const express = require('@feathersjs/express');
 
-import { services } from './services/index.js'
 
-const app = express(feathers())
+
+const middleware = require('./middleware');
+const services = require('./services');
+const appHooks = require('./app.hooks');
+const channels = require('./channels');
+
+const authentication = require('./authentication');
+
+const mongoose = require('./mongoose');
+
+const app = express(feathers());
 
 // Load app configuration
-app.configure(configuration(configurationValidator))
-app.use(cors())
-app.use(json())
-app.use(urlencoded({ extended: true }))
+app.configure(configuration());
+// Enable security, CORS, compression, favicon and body parsing
+app.use(helmet({
+  contentSecurityPolicy: false
+}));
+app.use(cors());
+app.use(compress());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(favicon(path.join(app.get('public'), 'favicon.ico')));
 // Host the public folder
-app.use('/', serveStatic(app.get('public')))
+app.use('/', express.static(app.get('public')));
 
-// Configure services and real-time functionality
-app.configure(rest())
+// Set up Plugins and providers
+app.configure(express.rest());
 
-app.configure(mongodb)
 
-app.configure(authentication)
+app.configure(mongoose);
 
-app.configure(services)
-// app.configure(channels)
+
+// Configure other middleware (see `middleware/index.js`)
+app.configure(middleware);
+app.configure(authentication);
+// Set up our services (see `services/index.js`)
+app.configure(services);
+// Set up event channels (see channels.js)
+app.configure(channels);
 
 // Configure a middleware for 404s and the error handler
-app.use(notFound())
-app.use(errorHandler({ logger }))
+app.use(express.notFound());
+app.use(express.errorHandler({ logger }));
 
-// Register hooks that run on all service methods
-app.hooks({
-  around: {
-    all: [logError]
-  },
-  before: {},
-  after: {},
-  error: {}
-})
-// Register application setup and teardown hooks here
-app.hooks({
-  setup: [],
-  teardown: []
-})
+app.hooks(appHooks);
 
-export { app }
+module.exports = app;

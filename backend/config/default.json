@@ -1,19 +1,15 @@
 {
   "host": "localhost",
   "port": 3030,
-  "public": "./public/",
-  "origins": [
-    "http://localhost:3030"
-  ],
+  "public": "../public/",
   "paginate": {
     "default": 10,
     "max": 50
   },
-  "mongodb": "mongodb://127.0.0.1:27017/backend",
   "authentication": {
     "entity": "user",
     "service": "users",
-    "secret": "xdiBeNTL0EFXO+cYbDHTXtN+hc/t02TM",
+    "secret": "4ZX74dcvEWrXsncIuhy+c8rhY94=",
     "authStrategies": [
       "jwt",
       "local"
@@ -23,6 +19,7 @@
         "typ": "access"
       },
       "audience": "https://yourdomain.com",
+      "issuer": "feathers",
       "algorithm": "HS256",
       "expiresIn": "1d"
     },
@@ -30,5 +27,6 @@
       "usernameField": "email",
       "passwordField": "password"
     }
-  }
+  },
+  "mongodb": "mongodb://localhost:27017/backend"
 }

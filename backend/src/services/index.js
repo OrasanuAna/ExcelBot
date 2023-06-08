@@ -1,7 +1,5 @@
-import { user } from './users/users.js'
-
-export const services = (app) => {
-  app.configure(user)
-
-  // All services will be registered here
-}
+const users = require('./users/users.service.js');
+// eslint-disable-next-line no-unused-vars
+module.exports = function (app) {
+  app.configure(users);
+};
