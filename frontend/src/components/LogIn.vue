@@ -11,41 +11,69 @@
             {{ subtitle  }}
           </v-card-subtitle>
           <v-card-text>
-            <v-alert outlined text type="error" v-if="signupError">
-              {{ signupError }}
+            <v-alert outlined text type="error" v-if="error">
+              {{ error }}
             </v-alert>
             <v-form v-model="formularValid" id="logInForm">
-              <v-text-field
-                id="usernameInput"
-                v-model ="username"
-                :rules="[fieldNotEmpty, usernameIsEmail]"
-                label="Username"
-                prepend-icon="mdi-account"
-                hint="Introduceti username-ul">
-              </v-text-field>
-              <v-text-field
-                id="passwordInput"
-                :rules="[fieldNotEmpty, passwordHasNumber, passwordHasUpper, passwordHasLower, passwordHasSpecial, passwordLength]"
-                v-model="password"
-                label="Password"
-                prepend-icon="mdi-lock-outline"
-                :append-icon="passViz ? 'mdi-eye' : 'mdi-eye-off'"
-                hint="Introduceti parola"
-                :type="passViz ? 'text' : 'password'"
-                @click:append="passViz = !passViz">
-              </v-text-field>
-              <v-text-field
-                id="confirmInput"
-                v-model="confirm"
-                v-if="title === 'Sign Up'"
-                :rules="[fieldNotEmpty, passwordMatch]"
-                label="Confirm Password"
-                prepend-icon="mdi-lock-outline"
-                :append-icon="passViz ? 'mdi-eye' : 'mdi-eye-off'"
-                hint="Confirmati parola"
-                :type="passViz ? 'text' : 'password'"
-                @click:append="passViz = !passViz">
-              </v-text-field>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      id="usernameInput"
+                      v-model ="username"
+                      :rules="[fieldNotEmpty, usernameIsEmail]"
+                      label="Username"
+                      prepend-icon="mdi-account"
+                      hint="Introduceti username-ul">
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      id="passwordInput"
+                      :rules="[fieldNotEmpty, passwordHasNumber, passwordHasUpper, passwordHasLower, passwordHasSpecial, passwordLength]"
+                      v-model="password"
+                      label="Password"
+                      prepend-icon="mdi-lock-outline"
+                      :append-icon="passViz ? 'mdi-eye' : 'mdi-eye-off'"
+                      :append-outer-icon="title === 'Sign Up'? 'mdi-creation' : ''"
+                      hint="Introduceti parola"
+                      :type="passViz ? 'text' : 'password'"
+                      @click:append="passViz = !passViz"
+                      @click:append-outer="generatePassword">
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row v-if="title === 'Sign Up'">
+                  <v-col cols="12" class="d-flex justify-center pl-11 pr-4">
+                    <v-progress-linear
+                      :value="pwdStength.strength"
+                      :color="pwdStength.color"
+                      height="24">
+                      <template v-slot:default>
+                        <strong>{{ pwdStength.text }}</strong>
+                      </template>
+                    </v-progress-linear>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      id="confirmInput"
+                      v-model="confirm"
+                      v-if="title === 'Sign Up'"
+                      :rules="[fieldNotEmpty, passwordMatch]"
+                      label="Confirm Password"
+                      prepend-icon="mdi-lock-outline"
+                      :append-icon="passViz ? 'mdi-eye' : 'mdi-eye-off'"
+                      hint="Confirmati parola"
+                      :type="passViz ? 'text' : 'password'"
+                      @click:append="passViz = !passViz">
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-form>
             <v-list dense v-if="title === 'Sign Up'">
               <v-subheader>Password must contain the following:
@@ -92,13 +120,13 @@
 
 <script>
 
+import password from 'secure-random-password'
+
 export default {
   name: 'LogIn',
 
   data: () => ({
-    loading: false,
-    signupError: false,
-    title: 'Sign Up',
+    title: 'Log In',
     subtitle: 'Please provide your information',
     alt: 'Log In',
     passViz: false,
@@ -119,6 +147,13 @@ export default {
   }),
 
   computed: {
+    loading () {
+      return this.$store.getters.loading
+    },
+    error () {
+      return this.$store.getters.error
+    },
+
     usernameIsEmail () {
       // returns if the username is an email based on regex
       return /\S+@\S+\.\S+/.test(this.username) || this.errorMessages[7]
@@ -177,10 +212,37 @@ export default {
     },
     passwordHasSpecial () {
       return /[^A-Za-z0-9]/.test(this.password) || this.errorMessages[4]
+    },
+    pwdStength () {
+      const len = this.password.length
+      // count the number of number characters in the password string
+      const num = (this.password.match(/\d/g) || []).length
+      // count the number of uppercase characters in the password string
+      const upper = (this.password.match(/[A-Z]/g) || []).length
+      // count the number of lowercase characters in the password string
+      const lower = (this.password.match(/[a-z]/g) || []).length
+      // count the number of special characters in the password string
+      const special = (this.password.match(/[^A-Za-z0-9]/g) || []).length
+
+      // calculate the strength of the password between 0 and 100
+      const strength = Math.floor((len + num + upper + lower + special) / 5 * 100 / 20)
+
+      // generate a color based on the strength of the password
+      // red for weak (<25), yellow for medium (<50), blue for strong (<75) and green for superstrong (<100)
+      const color = strength < 25 ? '1' : strength < 50 ? '2' : strength < 75 ? '3' : '4'
+      const text = strength < 25 ? 'weak AF' : strength < 50 ? 'meh' : strength < 75 ? 'ok' : 'yes!'
+      // return the strength and the color
+      return { strength, color: 'strength-' + color, text }
     }
   },
 
   methods: {
+    generatePassword () {
+      const length = Math.floor(Math.random() * 8 + 17)
+      const pwd = password.randomPassword({ length: length, characters: [password.lower, password.upper, password.digits, password.symbols] })
+      this.password = pwd
+      this.confirm = pwd
+    },
     change () {
       if (this.title === 'Sign Up') {
         this.title = 'Log In'
@@ -192,23 +254,27 @@ export default {
         this.alt = 'Log In'
       }
     },
-    handleAuthentication () {
+    async handleAuthentication () {
       if (this.title === 'Sign Up') {
-        this.signupError = false
-        this.loading = true
-        this.$store.dispatch('signup', {
-          username: this.username,
-          password: this.password
-        }).then(() => {
-          this.loading = false
+        try {
+          await this.$store.dispatch('signup', {
+            username: this.username,
+            password: this.password
+          })
           this.$router.push({ name: 'home' })
-        }).catch((err) => {
-          this.loading = false
-          this.signupError = true
+        } catch (err) {
           console.log(err)
-        })
+        }
       } else {
-        console.log('Log In')
+        try {
+          await this.$store.dispatch('login', {
+            username: this.username,
+            password: this.password
+          })
+          this.$router.push({ name: 'home' })
+        } catch (err) {
+          console.log(err)
+        }
       }
     }
   }
